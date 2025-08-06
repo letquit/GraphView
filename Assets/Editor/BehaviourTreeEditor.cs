@@ -10,6 +10,11 @@ namespace Editor
     {
         private BehaviourTreeView treeView;
         private InspectorView inspectorView;
+        private IMGUIContainer blackboardView;
+
+        private SerializedObject treeObject;
+        private SerializedProperty blackboardProperty;
+        
         [MenuItem("BehaviourTreeEditor/Editor ...")]
         public static void OpenWindow()
         {
@@ -70,6 +75,13 @@ namespace Editor
             
             treeView = root.Q<BehaviourTreeView>();
             inspectorView = root.Q<InspectorView>();
+            blackboardView = root.Q<IMGUIContainer>();
+            blackboardView.onGUIHandler = () =>
+            {
+                treeObject.Update();
+                EditorGUILayout.PropertyField(blackboardProperty);
+                treeObject.ApplyModifiedProperties();
+            };
             treeView.OnNodeSelected = OnNodeSelectionChanged;
             OnSelectionChange();
         }
@@ -102,6 +114,12 @@ namespace Editor
                 {
                     treeView.PopulateView(tree);
                 }   
+            }
+
+            if (tree != null)
+            {
+                treeObject = new SerializedObject(tree);
+                blackboardProperty = treeObject.FindProperty("blackboard");
             }
         }
         
