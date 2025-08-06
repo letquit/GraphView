@@ -27,6 +27,14 @@ public partial class BehaviourTreeView : GraphView
 
         style.flexGrow = 1;
         style.flexShrink = 0;
+
+        Undo.undoRedoPerformed += OnUndoRedo;
+    }
+
+    private void OnUndoRedo()
+    {
+        PopulateView(tree);
+        AssetDatabase.SaveAssets();
     }
 
     NodeView FindNodeView(Node node)
