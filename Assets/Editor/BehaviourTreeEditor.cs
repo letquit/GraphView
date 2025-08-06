@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -28,6 +29,34 @@ namespace Editor
             return false;
         }
 
+        private void OnEnable()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange obj)
+        {
+            switch (obj)
+            {
+                case PlayModeStateChange.EnteredEditMode:
+                    OnSelectionChange();
+                    break;
+                case PlayModeStateChange.ExitingEditMode:
+                    break;
+                case PlayModeStateChange.EnteredPlayMode:
+                    OnSelectionChange();
+                    break;
+                case PlayModeStateChange.ExitingPlayMode:
+                    break;
+            }
+        }
+
         public void CreateGUI()
         {
             // Each editor window contains a root VisualElement object
@@ -44,16 +73,38 @@ namespace Editor
             treeView.OnNodeSelected = OnNodeSelectionChanged;
             OnSelectionChange();
         }
-        
+
         private void OnSelectionChange()
         {
             BehaviourTree tree = Selection.activeObject as BehaviourTree;
-            if (tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID()))
+            if (!tree)
             {
-                treeView.PopulateView(tree);
+                if (Selection.activeGameObject)
+                {
+                    BehaviourTreeRunner runner = Selection.activeGameObject.GetComponent<BehaviourTreeRunner>();
+                    if (runner)
+                    {
+                        tree = runner.tree;
+                    }
+                }
+            }
+
+            if (Application.isPlaying)
+            {
+                if (tree)
+                {
+                    treeView.PopulateView(tree);
+                }
+            }
+            else
+            {
+                if (tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID()))
+                {
+                    treeView.PopulateView(tree);
+                }   
             }
         }
-
+        
         private void OnNodeSelectionChanged(NodeView node)
         {
             inspectorView.UpdateSelection(node);
