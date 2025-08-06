@@ -74,6 +74,9 @@
 
 #description {
     font-size: 10px;
+    text-overflow: clip;
+    white-space: normal;
+    max-width: 150px;
 }
 
 #divider {

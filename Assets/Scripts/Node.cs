@@ -16,6 +16,7 @@ public abstract class Node : ScriptableObject
     [HideInInspector] public Vector2 position;
     [HideInInspector] public Blackboard blackboard;
     // [HideInInspector] public AiAgent agent;
+    [TextArea] public string description;
 
     public State Update()
     {
