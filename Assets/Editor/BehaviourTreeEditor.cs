@@ -109,5 +109,10 @@ namespace Editor
         {
             inspectorView.UpdateSelection(node);
         }
+
+        private void OnInspectorUpdate()
+        {
+            treeView?.UpdateNodeStates();
+        }
     }
 }

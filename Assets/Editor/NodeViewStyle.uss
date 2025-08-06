@@ -101,3 +101,24 @@
     background-color: rgb(255, 82, 84);
     min-height: 20px;
 }
+
+#node-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(0, 0, 0);
+}
+
+.running #node-state {
+    background-color: rgb(255, 213, 0);
+}
+
+.success #node-state {
+    background-color: rgba(71, 212, 0, 0.5);
+}
+
+.failure #node-state {
+    background-color: rgba(255, 0, 0, 0.7);
+}
